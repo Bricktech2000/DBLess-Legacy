@@ -34,11 +34,15 @@ $ python3 run.py
 
 `master password`: your master password
 
+&nbsp;
+
 Below is an example on how to use the program:
+
 ```shell
 domain name: gmail.com
 username: my.email@gmail.com
 master password: Password123
 ```
+
 the program then copies the following password to your clipboard:
 `]Lza$)GCzOBy/I[LtrR1HRTZ%vEPRjklueZgh?*+`
