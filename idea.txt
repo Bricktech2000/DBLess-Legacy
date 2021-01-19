@@ -1,0 +1,127 @@
+sha256 hash src: https://emn178.github.io/online-tools/sha256.html
+Z85 encode src: https://cryptii.com/pipes/hex-to-ascii85
+base85 src: https://stackoverflow.com/questions/6008047/why-is-base128-not-used
+
+
+
+database structure
+
+root
+  |- domain name 1
+  |   |- username 1
+  |   |- username 2
+  |   |- username 3
+  |   '- username n
+  |- domain name 2
+  |   |- username 1
+  |   |- username 2
+  |   |- username 3
+  |   '- username n
+  |- domain name 2
+  |   |- username 1
+  |   |- username 2
+  |   |- username 3
+  |   '- username n
+  '- domain name n
+      |- username 1
+      |- username 2
+      |- username 3
+      '- username n
+[...]
+
+
+The database holds all currently known login domain names and usernames for convenience. This is not strictly necessary.
+
+`domain name` is the domain name of the website you wish to log into (gmail.com). `username` is the username used to log into said website (my.email@gmail.com). `master password` is the master password for child password generation (Password123). `domain name`, `username` and `master password` are then hashed together to produce a 265-bit SHA hash (f46cbae1ee0533b574657355934f28f587c1159e61f0977e3f027ad6326f841b), which is converted to Z85 (]Lza$)GCzOBy/I[LtrR1HRTZ%vEPRjklueZgh?*+) and then used as a child password for said domain name and username.
+
+The beauty of this system is that no real database is needed. If the website and the username for said website are known (which they are), then the password can be generated using the master password. If someone finds the database of domain names and usernames, they cannot get in since they do not know the master password. The master password is not stored anywhere because it does not need to be; the child passwords are derived from the master password on-the-fly, as requested by the user. Even if a database leak happens, the gibberish child password would need to be un-hashed, which is impossible. However, if the database leak were to store passwords in plain text, it would need to be converted back to bytes, and then un-hashed for a second time before revealing the master password, which is pretty much impossible.
+
+
+Here is an example:
+
+domain name:  gmail.com
+username:     my.email@gmail.com
+master:       Password123
+
+concatenated: gmail.com%my.email@gmail.com%Password123
+SHA-256 hash: f46cbae1ee0533b574657355934f28f587c1159e61f0977e3f027ad6326f841b
+Z85 encode:   ]Lza$)GCzOBy/I[LtrR1HRTZ%vEPRjklueZgh?*+
+
+The Z85-encoded string is then used as the website password.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
