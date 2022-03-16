@@ -1,48 +1,42 @@
-DBLess Password Manager
-=======================
+# DBLess Password Manager
 
 A hash-based, database-less password manager
 
-Overview
---------
+## Overview
 
 This program takes your master password through a hash function to generate a unique password for any website you visit.
 
+## Requirements
 
-Requirements
-------------
+- Python 3
 
-* Python 3
+## Setup
 
-Setup
------
-
-```shell
-$ pip3 install pyperclip
+```bash
+pip3 install pyperclip
 ```
 
-Usage
------
+## Usage
 
-```shell
+```bash
 $ python3 run.py
 ```
 
-`domain name`: the domain name of the website you wish to log into
+`Service`: the name of the service you wish to log into
 
-`username`: the username used to log in
+`Username`: the username used to log in
 
-`master password`: your master password
+`Master Password`: your master password
 
-&nbsp;
+### Example
 
-Below is an example on how to use the program:
+Below is an example on how to use the program.
 
-```shell
-domain name: gmail.com
-username: my.email@gmail.com
-master password: Password123
+```bash
+Service: google
+Username: my.email@gmail.com
+Master Password: Password123
 ```
 
 the program then copies the following password to your clipboard:
-`]Lza$)GCzOBy/I[LtrR1HRTZ%vEPRjklueZgh?*+`
+`N>j}33P[6[F?a{fQ$5{gn{<F#z8hJ7B=u<.E1p!J`
