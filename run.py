@@ -47,5 +47,10 @@ master = getpass.getpass('Master Password: ')
 password = encode(sha256(join(name, user, master)).digest())
 
 # https://stackoverflow.com/questions/11063458/python-script-to-copy-text-to-clipboard
-pyperclip.copy(password)
-print('\nPassword has been copied to clipboard.')
+try:
+  pyperclip.copy(password)
+  print('\nPassword has been copied to clipboard.')
+except pyperclip.PyperclipException:
+  inp = input('\nCould not copy password to clipboard. Would you like to send it to stdout? ')
+  if inp.lower()[0] == 'y':
+    print(password)
