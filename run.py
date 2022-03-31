@@ -51,6 +51,6 @@ try:
   pyperclip.copy(password)
   print('\nPassword has been copied to clipboard.')
 except pyperclip.PyperclipException:
-  inp = input('\nCould not copy password to clipboard. Would you like to send it to stdout? ')
-  if inp.lower()[0] == 'y':
+  inp = input('\nCould not copy password to clipboard. Would you like to print it to stdout? ')
+  if len(inp) and inp.lower()[0] == 'y':
     print(password)
