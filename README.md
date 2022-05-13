@@ -18,8 +18,10 @@ pip3 install pyperclip
 
 ## Usage
 
+Before running the program, create a file called `.token` in the root of the repository and put any token you wish in it. It is used to prevent attacks from keyloggers.
+
 ```bash
-$ python3 run.py
+python3 run.py
 ```
 
 `Service`: the name of the service you wish to log into
@@ -28,15 +30,19 @@ $ python3 run.py
 
 `Master Password`: your master password
 
+`[C]opy, [P]rint, [A]bort:`: the action you wish to take
+
 ### Example
 
 Below is an example on how to use the program.
 
 ```bash
+Warning: Token file is empty.
 Service: google
 Username: my.email@gmail.com
 Master Password: Password123
+[C]opy, [P]rint, [A]bort: c
 ```
 
 the program then copies the following password to your clipboard:
-`N>j}33P[6[F?a{fQ$5{gn{<F#z8hJ7B=u<.E1p!J`
+`^zLPrWepdR%mXnb<i[3%Nm?EDW[6d>D#QJS{eBrh`
