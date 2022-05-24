@@ -13,7 +13,7 @@ This program takes your master password through a hash function to generate a un
 ## Setup
 
 ```bash
-pip3 install pyperclip
+pip3 install cryptography pyperclip
 ```
 
 ## Usage

@@ -6,10 +6,15 @@ import sys
 import time
 import math
 import base64
+import shutil
 import getpass
 import pyperclip
 
 # Fernet: https://www.geeksforgeeks.org/encrypt-and-decrypt-files-using-python/
+# script path: https://stackoverflow.com/questions/595305/how-do-i-get-the-path-of-the-python-script-i-am-running-in
+# shutil zip archives: https://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory
+# shutil make_archive docs: https://docs.python.org/3/library/shutil.html#shutil.make_archive
+# tar vs zip: https://stackoverflow.com/questions/10540935/what-is-the-difference-between-tar-and-zip
 
 # https://stackoverflow.com/questions/36490354/working-with-bytes-in-python-using-sha-256
 
@@ -61,21 +66,59 @@ def get_token(filename):
 
 def encrypt(filename):
   print(f'Encrypting...')
-  with open(filename, 'rb') as nonencrypted:
-    with open(f'{filename}.dbless', 'wb') as encrypted:
-      encrypted.write(fernet.encrypt(nonencrypted.read()))
-    os.remove(filename)
+
+  if os.path.exists(filename) and os.path.isdir(filename):
+    shutil.make_archive(filename, 'tar', filename)
+    with open(f'{filename}.tar', 'rb') as nonencrypted:
+      with open(f'{filename}.zdbless', 'wb') as encrypted:
+        encrypted.write(fernet.encrypt(nonencrypted.read()))
+    shutil.rmtree(f'{filename}')
+    os.remove(f'{filename}.tar')
+
+  elif os.path.exists(filename):
+    with open(f'{filename}', 'rb') as nonencrypted:
+      with open(f'{filename}.dbless', 'wb') as encrypted:
+        encrypted.write(fernet.encrypt(nonencrypted.read()))
+    os.remove(f'{filename}')
+
+  else:
+    print('Error: File does not exist.')
+    print('Aborting.')
+    exit(1)
 
 
 def decrypt(filename):
   print(f'Decrypting...')
+
   try:
-    with open(f'{filename}.dbless', 'rb') as encrypted:
-      with open(filename, 'wb') as nonencrypted:
-        nonencrypted.write(fernet.decrypt(encrypted.read()))
-      os.remove(f'{filename}.dbless')
+    if os.path.exists(f'{filename}.zdbless'):
+      try:
+        with open(f'{filename}.zdbless', 'rb') as encrypted:
+          with open(f'{filename}.tar', 'wb') as nonencrypted:
+            nonencrypted.write(fernet.decrypt(encrypted.read()))
+        os.remove(f'{filename}.zdbless')
+        shutil.unpack_archive(f'{filename}.tar', filename, 'tar')
+        os.remove(f'{filename}.tar')
+      except:
+        os.remove(f'{filename}.tar')
+        raise
+
+    elif os.path.exists(f'{filename}.dbless'):
+      try:
+        with open(f'{filename}.dbless', 'rb') as encrypted:
+          with open(f'{filename}', 'wb') as nonencrypted:
+            nonencrypted.write(fernet.decrypt(encrypted.read()))
+        os.remove(f'{filename}.dbless')
+      except:
+        os.remove(f'{filename}')
+        raise
+
+    else:
+      print('Error: File does not exist.')
+      print('Aborting.')
+      exit(1)
+
   except InvalidToken:
-    os.remove(filename)
     print('Error: Invalid checksum.')
     print('Aborting.')
     exit(1)
