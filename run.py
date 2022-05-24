@@ -1,11 +1,15 @@
 from hashlib import sha256, sha1
+from cryptography.fernet import Fernet, InvalidToken
 from functools import reduce
+import os
 import sys
 import time
 import math
+import base64
 import getpass
 import pyperclip
 
+# Fernet: https://www.geeksforgeeks.org/encrypt-and-decrypt-files-using-python/
 
 # https://stackoverflow.com/questions/36490354/working-with-bytes-in-python-using-sha-256
 
@@ -55,6 +59,28 @@ def get_token(filename):
     print(f'Error: Token file \'{filename}\' not found.')
 
 
+def encrypt(filename):
+  print(f'Encrypting...')
+  with open(filename, 'rb') as nonencrypted:
+    with open(f'{filename}.dbless', 'wb') as encrypted:
+      encrypted.write(fernet.encrypt(nonencrypted.read()))
+    os.remove(filename)
+
+
+def decrypt(filename):
+  print(f'Decrypting...')
+  try:
+    with open(f'{filename}.dbless', 'rb') as encrypted:
+      with open(filename, 'wb') as nonencrypted:
+        nonencrypted.write(fernet.decrypt(encrypted.read()))
+      os.remove(f'{filename}.dbless')
+  except InvalidToken:
+    os.remove(filename)
+    print('Error: Invalid checksum.')
+    print('Aborting.')
+    exit(1)
+
+
 print('DBLess Password Manager\n')
 token = get_token('.token')
 if token is None:
@@ -67,11 +93,15 @@ user = input('Username: ').lower()
 master = getpass.getpass('Master Password: ')
 if master == '':
   print('Warning: Master password field is empty.')
-password = encode(sha256(join(name, user, master, token)).digest())
+digest = sha256(join(name, user, master, token)).digest()
+password = encode(digest)
+fernet = Fernet(base64.b64encode(digest))
 
+print('')
 # https://stackoverflow.com/questions/11063458/python-script-to-copy-text-to-clipboard
 try:
-  choice = input('[C]opy, [P]rint, [A]bort: ').lower()
+  choice = input(
+      '[C]opy, [P]rint, [A]bort\n[E]ncrypt, [D]ecrypt, [M]odify\nChoice: ').lower()
   if choice in ['c', '']:
     pyperclip.copy(password)
     print('\nPassword has been copied to clipboard.')
@@ -84,6 +114,22 @@ try:
   elif choice == 'a':
     print('\nAborting.')
     exit(1)
+  elif choice in ['e', 'd', 'm']:
+    filename = input('File name: ')
+    print('')
+    if choice == 'e':
+      encrypt(filename)
+    elif choice == 'd':
+      decrypt(filename)
+    elif choice == 'm':
+      decrypt(filename)
+      input('Press any key to continue.')
+      encrypt(filename)
+    else:
+      print('\nError: Invalid choice.')
+      print('Aborting.')
+      exit(1)
+    print('Done.')
   else:
     print('\nError: Invalid choice.')
     print('Aborting.')
