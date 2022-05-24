@@ -82,7 +82,8 @@ def decrypt(filename):
 
 
 print('DBLess Password Manager\n')
-token = get_token('.token')
+token = get_token(os.path.join(
+    os.path.abspath(os.path.dirname(__file__)), '.token'))
 if token is None:
   print('Aborting.')
   exit(1)
