@@ -1,16 +1,14 @@
 from hashlib import sha256, sha1
-from cryptography.fernet import Fernet, InvalidToken
+from buffered_encryption.aesgcm import EncryptionIterator, DecryptionIterator
 from functools import reduce
 import os
 import sys
 import time
 import math
-import base64
 import shutil
 import getpass
 import pyperclip
 
-# Fernet: https://www.geeksforgeeks.org/encrypt-and-decrypt-files-using-python/
 # script path: https://stackoverflow.com/questions/595305/how-do-i-get-the-path-of-the-python-script-i-am-running-in
 # shutil zip archives: https://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory
 # shutil make_archive docs: https://docs.python.org/3/library/shutil.html#shutil.make_archive
@@ -64,21 +62,25 @@ def get_token(filename):
     print(f'Error: Token file \'{filename}\' not found.')
 
 
-def encrypt(filename):
+def encrypt(filename, key, nonce):
   print(f'Encrypting...')
 
   if os.path.exists(filename) and os.path.isdir(filename):
     shutil.make_archive(filename, 'tar', filename)
     with open(f'{filename}.tar', 'rb') as nonencrypted:
+      enc = EncryptionIterator(nonencrypted, key, nonce)
       with open(f'{filename}.zdbless', 'wb') as encrypted:
-        encrypted.write(fernet.encrypt(nonencrypted.read()))
+        for chunk in enc:
+          encrypted.write(chunk)
     shutil.rmtree(f'{filename}')
     os.remove(f'{filename}.tar')
 
   elif os.path.exists(filename):
     with open(f'{filename}', 'rb') as nonencrypted:
+      enc = EncryptionIterator(nonencrypted, key, nonce)
       with open(f'{filename}.dbless', 'wb') as encrypted:
-        encrypted.write(fernet.encrypt(nonencrypted.read()))
+        for chunk in enc:
+          encrypted.write(chunk)
     os.remove(f'{filename}')
 
   else:
@@ -87,41 +89,47 @@ def encrypt(filename):
     exit(1)
 
 
-def decrypt(filename):
+def decrypt(filename, key, nonce):
   print(f'Decrypting...')
+  enc = DecryptionIterator(encrypted, key, nonce)
 
-  try:
-    if os.path.exists(f'{filename}.zdbless'):
-      try:
-        with open(f'{filename}.zdbless', 'rb') as encrypted:
-          with open(f'{filename}.tar', 'wb') as nonencrypted:
-            nonencrypted.write(fernet.decrypt(encrypted.read()))
-        os.remove(f'{filename}.zdbless')
-        shutil.unpack_archive(f'{filename}.tar', filename, 'tar')
-        os.remove(f'{filename}.tar')
-      except:
-        os.remove(f'{filename}.tar')
-        raise
+  # try:
 
-    elif os.path.exists(f'{filename}.dbless'):
-      try:
-        with open(f'{filename}.dbless', 'rb') as encrypted:
-          with open(f'{filename}', 'wb') as nonencrypted:
-            nonencrypted.write(fernet.decrypt(encrypted.read()))
-        os.remove(f'{filename}.dbless')
-      except:
-        os.remove(f'{filename}')
-        raise
+  if os.path.exists(f'{filename}.zdbless'):
+    try:
+      with open(f'{filename}.zdbless', 'rb') as encrypted:
+        dec = DecryptionIterator(encrypted, key, enc.iv, enc.tag)
+        with open(f'{filename}.tar', 'wb') as nonencrypted:
+          for chunk in dec:
+            nonencrypted.write(chunk)
+      os.remove(f'{filename}.zdbless')
+      shutil.unpack_archive(f'{filename}.tar', filename, 'tar')
+      os.remove(f'{filename}.tar')
+    except:
+      os.remove(f'{filename}.tar')
+      raise
 
-    else:
-      print('Error: File does not exist.')
-      print('Aborting.')
-      exit(1)
+  elif os.path.exists(f'{filename}.dbless'):
+    try:
+      with open(f'{filename}.dbless', 'rb') as encrypted:
+        dec = DecryptionIterator(encrypted, key, enc.iv, enc.tag)
+        with open(f'{filename}', 'wb') as nonencrypted:
+          for chunk in dec:
+            nonencrypted.write(chunk)
+      os.remove(f'{filename}.dbless')
+    except:
+      os.remove(f'{filename}')
+      raise
 
-  except InvalidToken:
-    print('Error: Invalid checksum.')
+  else:
+    print('Error: File does not exist.')
     print('Aborting.')
     exit(1)
+
+  # except InvalidToken:
+  #   print('Error: Invalid checksum.')
+  #   print('Aborting.')
+  #   exit(1)
 
 
 print('DBLess Password Manager\n')
@@ -139,7 +147,7 @@ if master == '':
   print('Warning: Master password field is empty.')
 digest = sha256(join(name, user, master, token)).digest()
 password = encode(digest)
-fernet = Fernet(base64.b64encode(digest))
+
 
 print('')
 # https://stackoverflow.com/questions/11063458/python-script-to-copy-text-to-clipboard
@@ -159,16 +167,17 @@ try:
     print('\nAborting.')
     exit(1)
   elif choice in ['e', 'd', 'm']:
+    nonce = 0
     filename = input('File name: ')
     print('')
     if choice == 'e':
-      encrypt(filename)
+      encrypt(filename, digest, nonce)
     elif choice == 'd':
-      decrypt(filename)
+      decrypt(filename, digest, nonce)
     elif choice == 'm':
-      decrypt(filename)
+      decrypt(filename, digest, nonce)
       input('Press any key to continue.')
-      encrypt(filename)
+      encrypt(filename, digest, nonce)
     else:
       print('\nError: Invalid choice.')
       print('Aborting.')
