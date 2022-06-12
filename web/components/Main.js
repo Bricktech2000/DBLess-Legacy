@@ -101,13 +101,12 @@ const Main = () => {
   }, [nameInputRef]);
 
   useEffect(() => {
-    console.log(state.token, localStorageToken);
     if (window.location.hash !== '') {
       try {
         state.token = Buffer.from(
           window.location.hash.substring(1),
           'base64'
-        ).toString('utf8');
+        ).toString();
         setState({
           ...state,
           token: state.token,
@@ -244,7 +243,9 @@ const Main = () => {
                 fullWidth
                 onClick={() =>
                   navigator.clipboard.writeText(
-                    `${window.location.href}#${btoa(state.token)}`
+                    `${window.location.href}#${Buffer.from(
+                      state.token
+                    ).toString('base64')}`
                   )
                 }
               >

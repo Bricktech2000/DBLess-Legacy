@@ -15,10 +15,10 @@ const Head = () => {
       />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={desc} />
-      <meta property="og:image" content={`https://edgie.emilien.ca/${icon}`} />
+      <meta property="og:image" content={`https://dbless.emilien.ca/${icon}`} />
       <title>{title}</title>
       <meta name="description" content={desc} />
-      <link rel="shortcut icon" href={`https://edgie.emilien.ca/${icon}`} />
+      <link rel="shortcut icon" href={`https://dbless.emilien.ca/${icon}`} />
 
       <link
         rel="preconnect"
