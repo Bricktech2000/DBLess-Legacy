@@ -1,6 +1,5 @@
 import React, { Component, useEffect, useState, useRef } from 'react';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import { TextField, Button, Tooltip, IconButton } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 
 import styles from './Main.module.css';
@@ -33,7 +32,7 @@ const CustomTextField = withStyles({
   },
 })(TextField);
 
-const CustomButton = withStyles({
+const CustomButtonOutlined = withStyles({
   root: {
     '&': {
       borderColor: 'var(--gray1)',
@@ -49,7 +48,7 @@ const CustomButton = withStyles({
   },
 })(Button);
 
-const CustomSubmitButton = withStyles({
+const CustomButtonContained = withStyles({
   root: {
     '&': {
       backgroundColor: 'var(--gray1)',
@@ -61,20 +60,32 @@ const CustomSubmitButton = withStyles({
   },
 })(Button);
 
+const CustomIconButton = withStyles({
+  root: {
+    '&': {
+      color: 'var(--gray1)',
+    },
+    '&:hover': {
+      color: 'var(--gray2)',
+    },
+  },
+})(IconButton);
+
 const Main = () => {
+  const [localStorageToken, setLocalStorageToken] = useState(null);
+
   useEffect(() => {
-    if (window.location.hash !== '') {
-      try {
-        setState({ ...state, token: atob(window.location.hash.substring(1)) });
-      } catch (e) {
-        console.log('b64 decode error');
-      }
-      // https://stackoverflow.com/questions/1397329/how-to-remove-the-hash-from-window-location-url-with-javascript-without-page-r
-      history.replaceState(null, null, ' ');
-    }
+    localStorageToken = localStorage.getItem('token');
+    setLocalStorageToken(localStorageToken);
   }, []);
 
+  useEffect(() => {
+    if (localStorageToken === null) localStorage.removeItem('token');
+    else localStorage.setItem('token', localStorageToken);
+  }, [localStorageToken]);
+
   // https://github.com/mui/material-ui/issues/7247
+  // https://stackoverflow.com/questions/29791721/how-get-data-from-material-ui-textfield-dropdownmenu-components
   const nameInputRef = useRef();
   const userInputRef = useRef();
   const masterInputRef = useRef();
@@ -88,6 +99,32 @@ const Main = () => {
   useEffect(() => {
     nameInputRef.current.focus();
   }, [nameInputRef]);
+
+  useEffect(() => {
+    console.log(state.token, localStorageToken);
+    if (window.location.hash !== '') {
+      try {
+        state.token = Buffer.from(
+          window.location.hash.substring(1),
+          'base64'
+        ).toString('utf8');
+        setState({
+          ...state,
+          token: state.token,
+        });
+      } catch (e) {
+        console.log(e);
+      }
+      // https://stackoverflow.com/questions/1397329/how-to-remove-the-hash-from-window-location-url-with-javascript-without-page-r
+      history.replaceState(null, null, ' ');
+    } else {
+      if (state.token === null)
+        setState({
+          ...state,
+          token: localStorageToken,
+        });
+    }
+  }, []);
 
   const run = async () => {
     ['name', 'user', 'master'].forEach((key) =>
@@ -180,19 +217,63 @@ const Main = () => {
                 })
               }
             />
-            <CustomButton
+            <CustomButtonOutlined
               variant="outlined"
               size="large"
               component="span"
               fullWidth
             >
               Upload Token
-            </CustomButton>
+            </CustomButtonOutlined>
           </label>
         ) : (
-          <CustomButton variant="outlined" size="large" fullWidth disabled>
-            Token Loaded
-          </CustomButton>
+          <div className={styles.tokenButtons}>
+            <CustomButtonOutlined
+              variant="outlined"
+              size="large"
+              fullWidth
+              disabled
+            >
+              Token Loaded
+            </CustomButtonOutlined>
+            <Tooltip title="Copy URL with Token Hash" arrow>
+              <CustomIconButton
+                variant="outlined"
+                size="small"
+                fullWidth
+                onClick={() =>
+                  navigator.clipboard.writeText(
+                    `${window.location.href}#${btoa(state.token)}`
+                  )
+                }
+              >
+                <i className={'fa-1x fas fa-link'}></i>
+              </CustomIconButton>
+            </Tooltip>
+            {localStorageToken === null ? (
+              <Tooltip title="Save to Local Storage" arrow>
+                <CustomIconButton
+                  variant="outlined"
+                  size="medium"
+                  fullWidth
+                  onClick={() => setLocalStorageToken(state.token)}
+                >
+                  <i className={'fa-1x far fa-bookmark'}></i>
+                </CustomIconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Delete from Local Storage" arrow>
+                <CustomIconButton
+                  variant="contained"
+                  size="medium"
+                  fullWidth
+                  onClick={() => setLocalStorageToken(null)}
+                >
+                  <i className={'fa-1x fas fa-bookmark'}></i>
+                </CustomIconButton>
+              </Tooltip>
+            )}
+          </div>
         )}
         <CustomTextField
           label="Service"
@@ -221,7 +302,7 @@ const Main = () => {
         />
 
         {/* https://stackoverflow.com/questions/58699898/submit-a-form-using-enter-key-with-material-ui-core-button-in-react-js */}
-        <CustomSubmitButton
+        <CustomButtonContained
           type="submit"
           variant="contained"
           size="large"
@@ -229,7 +310,7 @@ const Main = () => {
           onClick={run}
         >
           Copy to Clipboard
-        </CustomSubmitButton>
+        </CustomButtonContained>
       </div>
     </main>
   );

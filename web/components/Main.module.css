@@ -17,8 +17,10 @@
   font-size: 2em;
   font-weight: 600;
   color: var(--title);
+  text-align: center;
 }
 .Main p {
+  display: block;
   width: 60ch;
   max-width: 100%;
   text-align: center;
@@ -33,6 +35,7 @@
 }
 
 .Main .link {
+  display: inline;
   text-decoration: none;
   color: var(--gray1);
   transition: color 0.2s;
@@ -41,6 +44,13 @@
 
 .Main .link:hover {
   color: var(--gray2);
+}
+
+.Main .tokenButtons {
+  display: grid;
+  grid-template-columns: 1fr 1.5em 1.5em;
+  grid-gap: 0.5em;
+  padding-right: calc(0.5em / 2);
 }
 
 @keyframes fadeIn {
