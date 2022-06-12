@@ -25,6 +25,24 @@
   justify-content: center;
 }
 
+.Main .container {
+  flex-direction: column;
+  gap: 1em;
+  width: 30ch;
+  max-width: 100%;
+}
+
+.Main .link {
+  text-decoration: none;
+  color: var(--gray1);
+  transition: color 0.2s;
+  align-items: center;
+}
+
+.Main .link:hover {
+  color: var(--gray2);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

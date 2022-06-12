@@ -3,8 +3,10 @@
 
   --text: #aaa;
   --title: #fff;
-  --title-dark: #222;
-  --black: #000;
+
+  --gray1: #bbb;
+  --gray2: #ddd;
+  --gray3: #fff;
 
   --sans: Roboto, sans-serif;
   --mono: Inconsolata, monospace;
