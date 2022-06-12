@@ -75,29 +75,81 @@ const Main = () => {
   }, []);
 
   // https://github.com/mui/material-ui/issues/7247
-  const serviceInputRef = useRef();
-  const usernameInputRef = useRef();
+  const nameInputRef = useRef();
+  const userInputRef = useRef();
   const masterInputRef = useRef();
   const [state, setState] = useState({
     token: null,
-    service: '',
-    username: '',
+    name: '',
+    user: '',
     master: '',
   });
 
   useEffect(() => {
-    serviceInputRef.current.focus();
-  }, [serviceInputRef]);
+    nameInputRef.current.focus();
+  }, [nameInputRef]);
 
-  const copyMasterPassword = () => {
-    ['service', 'username', 'master'].forEach((key) =>
+  const run = async () => {
+    ['name', 'user', 'master'].forEach((key) =>
       setState((state) => {
         return { ...state, [key]: '' };
       })
     );
-    serviceInputRef.current.focus();
+    nameInputRef.current.focus();
 
-    console.log(state);
+    // z85 spec:
+    // https://rfc.zeromq.org/spec/32/
+    // https://github.com/zeromq/rfc/blob/master/src/spec_32.c
+
+    const encode = (bytes) => {
+      var out = '';
+      const table =
+        '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#';
+      var value = 0;
+      for (var i = 0; i < bytes.length; i++) {
+        // make 32-bit integer
+        value = value * 256 + bytes[i];
+        if (i % 4 == 3) {
+          // convert to printable characters using Z85
+          var divisor = Math.pow(85, 4);
+          while (divisor) {
+            out += table[Math.floor((value / divisor) % 85)];
+            divisor = Math.floor(divisor / 85);
+          }
+          value = 0;
+        }
+      }
+      return out;
+    };
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest#examples
+    const join = async (...args) => {
+      const xor = (a, b) => a.map((x, i) => x ^ b[i]);
+
+      return (
+        await Promise.all(
+          args
+            .map((arg) => new TextEncoder().encode(arg))
+            .map((data) => crypto.subtle.digest('SHA-1', data))
+        )
+      )
+        .map((arr) => new Uint8Array(arr))
+        .reduce(xor, new Uint8Array(20));
+    };
+
+    const digest = Array.from(
+      new Uint8Array(
+        await crypto.subtle.digest(
+          'SHA-256',
+          await join(state.name, state.user, state.master, state.token)
+        )
+      )
+    );
+    // .map((b) => b.toString(16).padStart(2, '0'))
+    // .join('')
+    const password = encode(digest);
+
+    navigator.clipboard.writeText(password);
   };
 
   return (
@@ -122,7 +174,10 @@ const Main = () => {
               style={{ display: 'none' }}
               id="button-file"
               onChange={async (e) =>
-                setState({ ...state, token: await e.target.files[0].text() })
+                setState({
+                  ...state,
+                  token: (await e.target.files[0].text()).trim(),
+                })
               }
             />
             <CustomButton
@@ -143,17 +198,17 @@ const Main = () => {
           label="Service"
           variant="outlined"
           fullWidth
-          inputRef={serviceInputRef}
-          value={state.service}
-          onChange={(e) => setState({ ...state, service: e.target.value })}
+          inputRef={nameInputRef}
+          value={state.name}
+          onChange={(e) => setState({ ...state, name: e.target.value })}
         />
         <CustomTextField
           label="Username"
           variant="outlined"
           fullWidth
-          inputRef={usernameInputRef}
-          value={state.username}
-          onChange={(e) => setState({ ...state, username: e.target.value })}
+          inputRef={userInputRef}
+          value={state.user}
+          onChange={(e) => setState({ ...state, user: e.target.value })}
         />
         <CustomTextField
           label="Master password"
@@ -171,7 +226,7 @@ const Main = () => {
           variant="contained"
           size="large"
           fullWidth
-          onClick={copyMasterPassword}
+          onClick={run}
         >
           Copy to Clipboard
         </CustomSubmitButton>

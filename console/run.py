@@ -13,7 +13,7 @@ import pyperclip
 # https://stackoverflow.com/questions/44571093/how-can-i-encode-a-32bit-integer-into-a-byte-array/44571179#44571179
 # https://stackoverflow.com/questions/51181193/convert-a-8bit-list-to-a-32-bit-integer-array-in-python/51181311
 # https://stackoverflow.com/questions/25259947/convert-variable-sized-byte-array-to-a-integer-long
-# z85 table:
+# z85 spec:
 # https://rfc.zeromq.org/spec/32/
 # https://github.com/zeromq/rfc/blob/master/src/spec_32.c
 # input: an array of bytes
