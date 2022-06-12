@@ -1,0 +1,35 @@
+.Main {
+  flex-direction: column;
+  font-size: 0.85em;
+  width: 100vw;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  padding: 2em 0;
+  gap: 1em;
+
+  /* https://stackoverflow.com/questions/11679567/using-css-for-a-fade-in-effect-on-page-load */
+  animation: fadeIn 1s;
+  opacity: 1;
+}
+
+.Main h1 {
+  font-size: 2em;
+  font-weight: 600;
+  color: var(--title);
+}
+.Main p {
+  width: 60ch;
+  max-width: 100%;
+  text-align: center;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

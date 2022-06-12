@@ -1,0 +1,39 @@
+:root {
+  --bg: #111111;
+
+  --text: #aaa;
+  --title: #fff;
+  --title-dark: #222;
+  --black: #000;
+
+  --sans: Roboto, sans-serif;
+  --mono: Inconsolata, monospace;
+  --bs: 0 0 0.5em var(--black);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html *:not(head *):not(script):not(style) {
+  /* https://www.youtube.com/watch?v=bngsrbFI2UY&t=120s */
+  display: flex;
+}
+
+body {
+  width: 100%;
+  overflow-x: hidden;
+  font-family: var(--sans);
+  font-size: clamp(min(2vh, 4vw), 1.75rem, min(3vh, 6vw));
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
