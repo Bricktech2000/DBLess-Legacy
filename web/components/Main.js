@@ -198,6 +198,7 @@ const Main = () => {
           className={styles.link}
           href="https://github.com/Bricktech2000/DBLess-Password-Manager"
           target="_blank"
+          rel="noreferrer"
         >
           <i className={'fa-1x fab fa-github'}></i>
         </a>
@@ -281,7 +282,9 @@ const Main = () => {
           fullWidth
           inputRef={nameInputRef}
           value={state.name}
-          onChange={(e) => setState({ ...state, name: e.target.value })}
+          onChange={(e) =>
+            setState({ ...state, name: e.target.value.toLowerCase() })
+          }
         />
         <CustomTextField
           label="Username"
@@ -289,7 +292,9 @@ const Main = () => {
           fullWidth
           inputRef={userInputRef}
           value={state.user}
-          onChange={(e) => setState({ ...state, user: e.target.value })}
+          onChange={(e) =>
+            setState({ ...state, user: e.target.value.toLowerCase() })
+          }
         />
         <CustomTextField
           label="Master password"

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import NextHead from 'next/head';
 
 const Head = () => {
-  const title = 'Emilien Breton - Edgie Links';
-  const desc = 'Click here to view my socials and to contact me.';
+  const title = 'DBLess Password Manager';
+  const desc = 'A hash-based, database-less password manager';
   const icon = 'icon.png';
 
   return (
