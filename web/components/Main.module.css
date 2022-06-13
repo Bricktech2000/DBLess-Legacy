@@ -14,10 +14,11 @@
 }
 
 .Main h1 {
+  color: var(--title);
   font-size: 2em;
   font-weight: 600;
-  color: var(--title);
   text-align: center;
+  line-height: 1;
 }
 .Main p {
   display: block;
@@ -51,6 +52,27 @@
   grid-template-columns: 1fr 1.5em 1.5em;
   grid-gap: 0.5em;
   padding-right: calc(0.5em / 2);
+}
+
+.Main .installLink {
+  text-decoration: none;
+  display: flex;
+  color: var(--gray1);
+  align-items: center;
+  align-self: center;
+  gap: 1ch;
+
+  transition: color 0.2s;
+}
+.Main .installLink:hover {
+  color: var(--gray2);
+}
+.Main .installLink.disabled {
+  pointer-events: none;
+  color: #666;
+}
+.Main .installLink.disabled:hover {
+  color: #666;
 }
 
 @keyframes fadeIn {

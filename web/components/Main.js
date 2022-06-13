@@ -125,6 +125,32 @@ const Main = () => {
     }
   }, []);
 
+  const installLinkRef = useRef();
+
+  useEffect(() => {
+    // https://stackoverflow.com/questions/50762626/pwa-beforeinstallprompt-not-called
+    // https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Offline_Service_workers
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+
+    // https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Add_to_home_screen
+    installLinkRef.current.classList.add(styles.disabled);
+    installLinkRef.current.addEventListener('click', (e) => e.preventDefault());
+    window.addEventListener('beforeinstallprompt', (installEvent) => {
+      console.log('ok');
+      installEvent.preventDefault();
+      installLinkRef.current.classList.remove(styles.disabled);
+
+      installLinkRef.current.addEventListener('click', async (e) => {
+        e.preventDefault();
+        installEvent.prompt();
+
+        const { outcome } = await installEvent.userChoice;
+        if (outcome === 'accepted')
+          installLinkRef.current.classList.add(styles.disabled);
+      });
+    });
+  }, []);
+
   const run = async () => {
     ['name', 'user', 'master'].forEach((key) =>
       setState((state) => {
@@ -317,6 +343,10 @@ const Main = () => {
         >
           Copy to Clipboard
         </CustomButtonContained>
+        <a className={styles.installLink} ref={installLinkRef} href="#">
+          <i className={'fa-1x fas fa-mobile-button'}></i>
+          Install App
+        </a>
       </div>
     </main>
   );
