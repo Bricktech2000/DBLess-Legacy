@@ -1,0 +1,15 @@
+{
+  "background_color": "#111",
+  "description": "A hash-based, database-less password manager",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "name": "DBLess Password Manager",
+  "short_name": "DBLess",
+  "start_url": "/"
+}

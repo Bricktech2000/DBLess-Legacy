@@ -20,6 +20,9 @@ const Head = () => {
       <meta name="description" content={desc} />
       <link rel="shortcut icon" href={`https://dbless.emilien.ca/${icon}`} />
 
+      {/* https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Add_to_home_screen */}
+      <link rel="manifest" href="manifest.webmanifest" />
+
       <link
         rel="preconnect"
         href="https://fonts.gstatic.com"
