@@ -33,7 +33,11 @@ body {
   width: 100%;
   overflow-x: hidden;
   font-family: var(--sans);
-  font-size: clamp(min(2vh, 4vw), 1.75rem, min(3vh, 6vw));
+  font-size: clamp(
+    calc(calc(100vh + 100vw) / 120),
+    1.75rem,
+    calc(calc(100vh + 100vw) / 50)
+  );
   font-weight: 300;
   line-height: 1.6;
   color: var(--text);

@@ -38,6 +38,21 @@ const Head = () => {
         href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;300;400;500;600;700;800;900&display=swap"
         rel="stylesheet"
       />
+
+      {/* https://stackoverflow.com/questions/32963400/android-keyboard-shrinking-the-viewport-and-elements-using-unit-vh-in-css */}
+      {/* https://medium.com/@sruthisreemenon/avoid-ui-distortions-during-keyboard-display-for-a-mobile-friendly-webpage-86eb99590a13 */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.addEventListener('load', () => {
+              setTimeout(() => {
+                var viewport = document.querySelector("meta[name=viewport]");
+                viewport.setAttribute("content", "height=" + window.innerHeight + "px, width=device-width, initial-scale=1.0")
+              });
+            });
+          `,
+        }}
+      />
     </NextHead>
   );
 };
