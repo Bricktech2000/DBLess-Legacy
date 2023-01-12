@@ -4,16 +4,16 @@ const generatePassword = async (...args) => {
   // https://github.com/zeromq/rfc/blob/master/src/spec_32.c
 
   const encode = (bytes) => {
-    var out = '';
+    let out = '';
     const table =
       '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#';
-    var value = 0;
-    for (var i = 0; i < bytes.length; i++) {
+    let value = 0;
+    for (let i = 0; i < bytes.length; i++) {
       // make 32-bit integer
       value = value * 256 + bytes[i];
       if (i % 4 == 3) {
         // convert to printable characters using Z85
-        var divisor = Math.pow(85, 4);
+        let divisor = Math.pow(85, 4);
         while (divisor) {
           out += table[Math.floor((value / divisor) % 85)];
           divisor = Math.floor(divisor / 85);

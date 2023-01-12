@@ -46,7 +46,7 @@ const Head = () => {
           __html: `
             window.addEventListener('load', () => {
               setTimeout(() => {
-                var viewport = document.querySelector("meta[name=viewport]");
+                let viewport = document.querySelector("meta[name=viewport]");
                 viewport.setAttribute("content", "height=" + window.innerHeight + "px, width=device-width, initial-scale=1.0")
               });
             });
