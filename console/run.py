@@ -56,7 +56,7 @@ def get_token(filename):
     print(f'Error: Token file \'{filename}\' not found.')
 
 
-print('DBLess Password Manager\n')
+print('DBLess\n')
 token = get_token(os.path.join(
     os.path.abspath(os.path.dirname(__file__)), '.token'))
 if token is None:

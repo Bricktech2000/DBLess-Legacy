@@ -1,5 +1,5 @@
 {
-  "name": "dbless-password-manager",
+  "name": "dbless",
   "version": "0.1.0",
   "private": true,
   "scripts": {

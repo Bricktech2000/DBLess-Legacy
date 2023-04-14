@@ -1,4 +1,4 @@
-# DBLess Password Manager
+# DBLess
 
 A hash-based, database-less password manager
 

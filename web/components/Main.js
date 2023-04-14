@@ -111,12 +111,12 @@ const Main = () => {
 
   return (
     <main className={styles.Main}>
-      <h1>DBLess Password Manager</h1>
+      <h1>DBLess</h1>
       <p>
         A hash-based, database-less password manager&nbsp;
         <a
           className={styles.link}
-          href="https://github.com/Bricktech2000/DBLess-Password-Manager"
+          href="https://github.com/Bricktech2000/DBLess"
           target="_blank"
           rel="noreferrer"
         >

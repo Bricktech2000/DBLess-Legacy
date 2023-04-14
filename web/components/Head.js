@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import NextHead from 'next/head';
 
 const Head = () => {
-  const title = 'DBLess Password Manager';
+  const title = 'DBLess';
   const desc = 'A hash-based, database-less password manager';
   const icon = 'icon.png';
 
