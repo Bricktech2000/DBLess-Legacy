@@ -79,7 +79,7 @@ pip3 install pyperclip
 
 ### Usage
 
-Before running the program, create a file called `.token` in `/console` and put a token in it. It is used as to equip the password manager with two-factor authentication.
+Before running the program, create a file called `token` in `/console` and put a token in it. It is used as to equip the password manager with two-factor authentication.
 
 ```bash
 cd console/

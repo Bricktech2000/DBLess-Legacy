@@ -58,7 +58,7 @@ def get_token(filename):
 
 print('DBLess\n')
 token = get_token(os.path.join(
-    os.path.abspath(os.path.dirname(__file__)), '.token'))
+    os.path.abspath(os.path.dirname(__file__)), 'token'))
 if token is None:
   print('Aborting.')
   exit(1)
