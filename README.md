@@ -1,6 +1,6 @@
 # DBLess
 
-A hash-based, database-less password manager
+_A hash-based, database-less password manager_
 
 ## Overview
 
